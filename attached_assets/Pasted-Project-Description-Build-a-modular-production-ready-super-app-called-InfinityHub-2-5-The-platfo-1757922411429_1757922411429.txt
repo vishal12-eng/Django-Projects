@@ -1,0 +1,221 @@
+Project Description:
+Build a modular, production-ready super app called InfinityHub 2.5. The platform merges features of Linktree, Instagram, Medium, Fiverr, Gumroad, Notion, ChatGPT, Zoom, and PayPal-based commerce.
+
+Core Requirements:
+
+Tech Stack
+
+Frontend: React.js + Tailwind CSS (SPA, responsive, modular)
+
+Backend: Django + Django REST Framework
+
+Database: MySQL
+
+Authentication: JWT via djangorestframework-simplejwt
+
+AI Integration: Gemini 2.5 Flash API (Google Generative AI)
+
+Payment: PayPal REST API for digital goods, subscriptions, and freelance payments
+
+Realtime Chat: Django Channels + Redis
+
+File Storage: Cloudinary or local media folder
+
+Video Meetings: Jitsi Meet integration (1-click video meetings)
+
+Deployment: Vercel (Frontend), Render/ Railway (Backend), PlanetScale/MySQL Cloud
+
+Core Modules & Features
+
+Module	Features
+User Auth & Profile	Sign up, login, password reset, avatar, bio, social links, JWT auth
+Public Bio / Linktree	/u/username page with social links, portfolio, personal theme
+Posts & Reels	Text/image/video posts, feed, likes/comments, hashtags
+Blog & Gemini AI	AI-assisted blog writing, markdown editor, AI draft suggestions
+Gemini AI Assistant	Chatbot with Gemini 2.5 Flash for content ideas, Q&A, task summaries
+Store / Digital Products	Sell PDFs, eBooks, tools, courses via PayPal; automatic delivery
+Freelance Gigs	Users can post gigs, clients pay via PayPal, gig dashboard
+Realtime Chat	Direct messaging, typing status, read receipts
+Invoice Generator	Generate PDF invoices, send to clients
+Calendar & To-do	AI-suggested events, reminders, tasks
+Resume Builder	Upload CV → Gemini generates professional resume
+Video Meetings	Jitsi Meet embed, schedule & join calls
+Widgets & Extras	Clock, crypto ticker, quotes, AI notes
+Custom Domain	Subdomain per user: username.infinityhub.in
+
+Database Schema (MySQL)
+
+# users/models.py
+class User(AbstractUser):
+    bio = models.TextField(blank=True)
+    avatar = models.ImageField(upload_to="avatars/", blank=True)
+    social_links = JSONField(default=dict)
+
+# posts/models.py
+class Post(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    media = models.FileField(upload_to="posts/", blank=True, null=True)
+    post_type = models.CharField(max_length=10, choices=[("text", "Text"), ("image", "Image"), ("video", "Video")])
+    created_at = models.DateTimeField(auto_now_add=True)
+
+# blog/models.py
+class Blog(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    content = models.TextField()
+    ai_generated = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+# store/models.py
+class Product(models.Model):
+    seller = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    file = models.FileField(upload_to="products/")
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+# gigs/models.py
+class Gig(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+# chat/models.py
+class Message(models.Model):
+    sender = models.ForeignKey(User, related_name="sent", on_delete=models.CASCADE)
+    receiver = models.ForeignKey(User, related_name="received", on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+# invoices/models.py
+class Invoice(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    client_name = models.CharField(max_length=255)
+    client_email = models.EmailField()
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    pdf = models.FileField(upload_to="invoices/")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+Gemini 2.5 Flash API Integration
+
+Install SDK:
+
+pip install google-generativeai
+
+
+Example blog generator:
+
+import google.generativeai as genai
+genai.configure(api_key="YOUR_GEMINI_API_KEY")
+
+def generate_blog(prompt):
+    model = genai.GenerativeModel("gemini-pro")
+    response = model.generate_content(prompt)
+    return response.text
+
+
+Use Gemini for:
+
+Blog drafts
+
+AI assistant/chat
+
+Notes generation
+
+Resume builder
+
+Content suggestions
+
+PayPal Integration
+
+Use PayPal REST API for:
+
+Digital product checkout
+
+Freelance gig payment
+
+Subscription plan payments
+
+Backend handles: create order → send approval link → execute payment → trigger webhook → deliver product
+
+Frontend Structure (React.js)
+
+frontend/
+├── src/
+│   ├── pages/
+│   │   ├── Login.jsx
+│   │   ├── Dashboard.jsx
+│   │   ├── UserBio.jsx
+│   │   ├── Feed.jsx
+│   │   ├── BlogCreate.jsx
+│   │   ├── Store.jsx
+│   │   ├── Gigs.jsx
+│   │   ├── Chat.jsx
+│   │   ├── Calendar.jsx
+│   │   ├── Resume.jsx
+│   │   └── AIChat.jsx
+│   ├── components/
+│   ├── api/ (Axios API calls)
+│   ├── utils/ (helpers)
+│   └── App.jsx
+
+
+Modular & Production Ready
+
+All modules can be toggled on/off per user
+
+Cloudinary for media files
+
+React + Tailwind = responsive, mobile-first
+
+Django REST API supports all frontend modules
+
+JWT Authentication for secure API access
+
+Realtime chat with Django Channels + Redis
+
+Gemini AI powered features for blogs, assistant, notes, resume
+
+Deployment & Hosting
+
+React frontend → Vercel
+
+Django backend → Render / Railway
+
+MySQL → PlanetScale / Render MySQL
+
+Optional: Dockerize both frontend & backend
+
+CI/CD with GitHub Actions
+
+Optional Extra Features
+
+PWA (offline + installable)
+
+Dark mode + theme switcher
+
+Analytics dashboard (views, sales, active users)
+
+SEO optimization with React Helmet & dynamic meta tags
+
+Notifications (Web push/email)
+
+✅ Summary
+
+InfinityHub 2.5 is a modular, production-ready super app with:
+
+Gemini AI assistant & blog
+
+PayPal digital payments
+
+MySQL database
+
+React frontend + Tailwind CSS
+
+Django REST backend
+
+Freelance gigs + store + posts + resume builder + calendar + video meetings
+
+Fully responsive, production-ready, modular
