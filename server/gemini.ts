@@ -1,7 +1,7 @@
-import { GoogleGenerativeAI } from "@google/generativeai";
+import { GoogleGenAI } from "@google/genai";
 
 // This API key is from Gemini Developer API Key, not vertex AI API Key
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+const genAI = new GoogleGenAI(process.env.GEMINI_API_KEY || "");
 
 export async function generateBlogContent(prompt: string): Promise<string> {
   try {

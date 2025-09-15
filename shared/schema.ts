@@ -256,6 +256,16 @@ export const insertUserSchema = createInsertSchema(users).pick({
   socialLinks: true,
 });
 
+export const upsertUserSchema = createInsertSchema(users).pick({
+  id: true,
+  email: true,
+  firstName: true,
+  lastName: true,
+  profileImageUrl: true,
+  bio: true,
+  socialLinks: true,
+});
+
 export const insertPostSchema = createInsertSchema(posts).omit({
   id: true,
   likes: true,
@@ -312,7 +322,7 @@ export const insertAiChatSchema = createInsertSchema(aiChats).omit({
 });
 
 // Types
-export type UpsertUser = z.infer<typeof insertUserSchema>;
+export type UpsertUser = z.infer<typeof upsertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type InsertPost = z.infer<typeof insertPostSchema>;
 export type Post = typeof posts.$inferSelect;
