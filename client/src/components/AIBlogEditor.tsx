@@ -67,9 +67,9 @@ export default function AIBlogEditor({ open, onOpenChange, blog, onBlogSaved }: 
   const saveBlogMutation = useMutation({
     mutationFn: async (data: any) => {
       if (blog?.id) {
-        return apiRequest("PUT", `/api/blogs/${blog.id}`, data);
+        return apiRequest("PUT", `/api/blogs/${blog.id}`, data).then(r => r.json());
       } else {
-        return apiRequest("POST", "/api/blogs", data);
+        return apiRequest("POST", "/api/blogs", data).then(r => r.json());
       }
     },
     onSuccess: () => {
@@ -105,7 +105,7 @@ export default function AIBlogEditor({ open, onOpenChange, blog, onBlogSaved }: 
       return apiRequest("POST", "/api/blogs/generate", { 
         prompt, 
         title: formData.title || "AI Generated Blog Post" 
-      });
+      }).then(r => r.json());
     },
     onSuccess: (data) => {
       setFormData(prev => ({
@@ -148,7 +148,7 @@ export default function AIBlogEditor({ open, onOpenChange, blog, onBlogSaved }: 
       return apiRequest("POST", "/api/ai/content-ideas", { 
         topic, 
         type: "blog" 
-      });
+      }).then(r => r.json());
     },
     onSuccess: (data) => {
       const ideas = data.ideas.join('\n\n• ');

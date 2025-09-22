@@ -56,7 +56,7 @@ export default function AIAssistant() {
   // Chat with AI mutation
   const chatMutation = useMutation({
     mutationFn: async (data: { message: string; chatType: string }) => {
-      return apiRequest("POST", "/api/ai/chat", data);
+      return apiRequest("POST", "/api/ai/chat", data).then(r => r.json());
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/ai/chats"] });
@@ -87,7 +87,7 @@ export default function AIAssistant() {
   // Generate content ideas mutation
   const generateIdeasMutation = useMutation({
     mutationFn: async (data: { topic: string; type: string }) => {
-      return apiRequest("POST", "/api/ai/content-ideas", data);
+      return apiRequest("POST", "/api/ai/content-ideas", data).then(r => r.json());
     },
     onSuccess: (data) => {
       const ideasText = data.ideas.join('\n• ');

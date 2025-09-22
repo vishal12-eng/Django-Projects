@@ -23,10 +23,8 @@ export async function apiRequest(
   return res;
 }
 
-type UnauthorizedBehavior = "returnNull" | "throw";
-export const getQueryFn: <T>(options: {
-  on401: UnauthorizedBehavior;
-}) => QueryFunction<T> =
+// Always return any JSON to simplify consumer typing
+export const getQueryFn: ({ on401 }: { on401: "returnNull" | "throw" }) => QueryFunction<any> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
     const res = await fetch(queryKey.join("/") as string, {
@@ -34,17 +32,17 @@ export const getQueryFn: <T>(options: {
     });
 
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {
-      return null;
+      return null as any;
     }
 
     await throwIfResNotOk(res);
-    return await res.json();
+    return (await res.json()) as any;
   };
 
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      queryFn: getQueryFn({ on401: "throw" }),
+      queryFn: getQueryFn({ on401: "throw" }) as QueryFunction<any>,
       refetchInterval: false,
       refetchOnWindowFocus: false,
       staleTime: Infinity,

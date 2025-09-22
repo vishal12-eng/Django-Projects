@@ -5,7 +5,7 @@ const genAI = new GoogleGenAI(process.env.GEMINI_API_KEY || "");
 
 export async function generateBlogContent(prompt: string): Promise<string> {
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = (genAI as any).getGenerativeModel({ model: "gemini-2.5-flash" });
     
     const enhancedPrompt = `You are a professional content writer. Create a comprehensive, well-structured blog post based on the following topic or prompt. Include an engaging introduction, detailed body sections with subheadings, and a compelling conclusion. Use markdown formatting for better readability.
 
@@ -24,7 +24,7 @@ Please write a complete blog post that is informative, engaging, and professiona
 
 export async function generateContentIdeas(topic: string, type: string = "general"): Promise<string[]> {
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = (genAI as any).getGenerativeModel({ model: "gemini-2.5-flash" });
     
     const prompt = `Generate 10 creative and engaging content ideas for the topic "${topic}" in the category of "${type}". 
     Return the ideas as a simple numbered list, one idea per line. Make the ideas specific, actionable, and appealing to a target audience.`;
@@ -36,8 +36,8 @@ export async function generateContentIdeas(topic: string, type: string = "genera
     // Parse the response into an array of ideas
     const ideas = text
       .split('\n')
-      .map(line => line.replace(/^\d+\.\s*/, '').trim())
-      .filter(line => line.length > 0);
+      .map((line: string) => line.replace(/^\d+\.\s*/, '').trim())
+      .filter((line: string) => line.length > 0);
     
     return ideas.slice(0, 10); // Ensure we return max 10 ideas
   } catch (error) {
@@ -48,7 +48,7 @@ export async function generateContentIdeas(topic: string, type: string = "genera
 
 export async function chatWithAI(message: string): Promise<string> {
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = (genAI as any).getGenerativeModel({ model: "gemini-2.5-flash" });
     
     const enhancedPrompt = `You are a helpful AI assistant for InfinityHub, a comprehensive digital platform for creators and entrepreneurs. 
     You help users with content creation, business advice, creative ideas, and general questions about using the platform.
@@ -68,7 +68,7 @@ export async function chatWithAI(message: string): Promise<string> {
 
 export async function improveBlogContent(content: string): Promise<string> {
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
+    const model = (genAI as any).getGenerativeModel({ model: "gemini-2.5-pro" });
     
     const prompt = `You are a professional editor and content strategist. Please improve the following blog content by:
     1. Enhancing clarity and readability
@@ -93,7 +93,7 @@ export async function improveBlogContent(content: string): Promise<string> {
 
 export async function generateGigIdeas(skills: string, category: string = "general"): Promise<string[]> {
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = (genAI as any).getGenerativeModel({ model: "gemini-2.5-flash" });
     
     const prompt = `Based on the skills "${skills}" in the "${category}" category, generate 8 specific freelance gig ideas that someone could offer on a platform like Fiverr or Upwork. 
     
@@ -111,8 +111,8 @@ export async function generateGigIdeas(skills: string, category: string = "gener
     // Parse the response into an array of gig ideas
     const ideas = text
       .split('\n')
-      .map(line => line.replace(/^\d+\.\s*/, '').trim())
-      .filter(line => line.length > 0 && line.includes('-'));
+      .map((line: string) => line.replace(/^\d+\.\s*/, '').trim())
+      .filter((line: string) => line.length > 0 && line.includes('-'));
     
     return ideas.slice(0, 8); // Ensure we return max 8 ideas
   } catch (error) {
